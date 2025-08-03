@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import json
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
 from .const import DOMAIN, LOGGER
@@ -14,6 +12,7 @@ from .data import KeypadManagerData, Schedule, User
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
 
 STORAGE_KEY = f"{DOMAIN}.storage"
 STORAGE_VERSION = 1
@@ -51,29 +50,34 @@ class KeypadManagerStorage:
                         code=user_data.get("code"),
                         tag=user_data.get("tag"),
                         active=user_data.get("active", True),
-                        created=datetime.fromisoformat(user_data["created"]) if user_data.get("created") else None,
-                        last_used=datetime.fromisoformat(user_data["last_used"]) if user_data.get("last_used") else None,
+                        created=datetime.fromisoformat(user_data["created"])
+                        if user_data.get("created")
+                        else None,
+                        last_used=datetime.fromisoformat(user_data["last_used"])
+                        if user_data.get("last_used")
+                        else None,
                     )
 
             schedules = []
             if "schedules" in stored_data:
-                for schedule_data in stored_data["schedules"]:
-                    schedules.append(Schedule(
+                schedules.extend(
+                    Schedule(
                         user_id=schedule_data["user_id"],
                         day_of_week=schedule_data["day_of_week"],
                         start_time=schedule_data["start_time"],
                         end_time=schedule_data["end_time"],
                         active=schedule_data.get("active", True),
-                    ))
+                    )
+                    for schedule_data in stored_data["schedules"]
+                )
 
             self.data = KeypadManagerData(users=users, schedules=schedules)
-            return self.data
-
-        except Exception as e:
+        except (ValueError, KeyError, TypeError) as e:
             LOGGER.error("Error loading Keypad Manager data: %s", e)
             # Return empty data on error
             self.data = KeypadManagerData(users={}, schedules=[])
-            return self.data
+
+        return self.data
 
     async def async_save(self) -> None:
         """Save data to storage."""
@@ -96,32 +100,36 @@ class KeypadManagerStorage:
                         "tag": user.tag,
                         "active": user.active,
                         "created": user.created.isoformat() if user.created else None,
-                        "last_used": user.last_used.isoformat() if user.last_used else None,
+                        "last_used": user.last_used.isoformat()
+                        if user.last_used
+                        else None,
                     }
 
             if self.data.schedules:
                 for schedule in self.data.schedules:
-                    stored_data["schedules"].append({
-                        "user_id": schedule.user_id,
-                        "day_of_week": schedule.day_of_week,
-                        "start_time": schedule.start_time,
-                        "end_time": schedule.end_time,
-                        "active": schedule.active,
-                    })
+                    stored_data["schedules"].append(
+                        {
+                            "user_id": schedule.user_id,
+                            "day_of_week": schedule.day_of_week,
+                            "start_time": schedule.start_time,
+                            "end_time": schedule.end_time,
+                            "active": schedule.active,
+                        }
+                    )
 
             await self.store.async_save(stored_data)
 
-        except Exception as e:
+        except (ValueError, KeyError, TypeError) as e:
             LOGGER.error("Error saving Keypad Manager data: %s", e)
 
     async def async_add_user(self, user: User) -> None:
         """Add a user to storage."""
         if self.data is None:
             await self.async_load()
-        
+
         if self.data.users is None:
             self.data.users = {}
-        
+
         self.data.users[user.id] = user
         await self.async_save()
 
@@ -129,7 +137,7 @@ class KeypadManagerStorage:
         """Remove a user from storage."""
         if self.data is None:
             await self.async_load()
-        
+
         if self.data.users and user_id in self.data.users:
             del self.data.users[user_id]
             await self.async_save()
@@ -138,7 +146,7 @@ class KeypadManagerStorage:
         """Get user by code."""
         if self.data is None:
             await self.async_load()
-        
+
         if self.data.users:
             for user in self.data.users.values():
                 if user.code == code and user.active:
@@ -149,7 +157,7 @@ class KeypadManagerStorage:
         """Get user by tag."""
         if self.data is None:
             await self.async_load()
-        
+
         if self.data.users:
             for user in self.data.users.values():
                 if user.tag == tag and user.active:
@@ -160,7 +168,7 @@ class KeypadManagerStorage:
         """Update user's last used timestamp."""
         if self.data is None:
             await self.async_load()
-        
+
         if self.data.users and user_id in self.data.users:
-            self.data.users[user_id].last_used = datetime.now()
-            await self.async_save() 
+            self.data.users[user_id].last_used = datetime.now(datetime.UTC)
+            await self.async_save()

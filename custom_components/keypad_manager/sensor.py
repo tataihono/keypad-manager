@@ -29,7 +29,7 @@ ENTITY_DESCRIPTIONS = (
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    hass: HomeAssistant,  # noqa: ARG001
     entry: KeypadManagerConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
@@ -58,5 +58,5 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        # TODO: Implement actual sensor values
+        # TODO(tataihono): Implement actual sensor values
         return "0"
