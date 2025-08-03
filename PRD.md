@@ -17,7 +17,7 @@ Keypad Manager is a Home Assistant custom integration that provides a centralize
 
 #### Users Table
 - **Name** (string): Human-readable name for the user
-- **Code** (string, optional): Numeric/alphanumeric keypad code (must be unique if provided)
+- **Code** (string, optional): Numeric keypad code, 4-8 digits (must be unique if provided)
 - **Tag** (string, optional): RFID tag identifier (must be unique if provided)
 - **Active** (boolean): Whether this user is currently active
 - **Created** (datetime): When the user was created
@@ -334,15 +334,15 @@ automation:
 - **Error Messages**: Clear error messages when uniqueness is violated
 
 ### Input Validation
-- **Code Format**: Validate code format (alphanumeric, length limits)
-- **Tag Format**: Validate tag format (hexadecimal, length limits)
+- **Code Format**: Validate code format (4-8 digits only)
+- **Tag Format**: Validate tag format (0-9999, numeric only)
 - **Name Validation**: Ensure user names are not empty
 - **Schedule Validation**: Validate time ranges and day formats
 
 ### Error Handling
 - **Duplicate Code**: "Code '1234' is already assigned to user 'John Doe'"
 - **Duplicate Tag**: "Tag 'ABC123' is already assigned to user 'Jane Smith'"
-- **Invalid Format**: "Code must be 4-8 alphanumeric characters"
+- **Invalid Format**: "Code must be 4-8 digits"
 - **Missing Required**: "User must have either a code or tag"
 
 ## Security Considerations
@@ -354,9 +354,19 @@ automation:
 - No network connectivity required
 
 ### Data Protection
-- Codes and tags stored securely in HA storage
-- Access events handled by HA's native event system
-- No external data transmission
+- **Encrypted Codes**: Keypad codes are encrypted using PBKDF2 with SHA256
+- **Plain Text Tags**: RFID tags stored in plain text (validated by hardware)
+- **Unique Salts**: Each code uses a unique 32-byte salt for maximum security
+- **Secure Comparison**: Uses constant-time comparison to prevent timing attacks
+- **Hardware Validation**: RFID tags rely on hardware-level security
+- **Access Events**: Handled by Home Assistant's native event system
+- **User Management**: Restricted to Home Assistant administrators
+
+### Encryption Details
+- **Algorithm**: PBKDF2 with SHA256 (for codes only)
+- **Iterations**: 100,000 rounds for strong security
+- **Salt Length**: 32 bytes (64 hex characters)
+- **Storage**: Encrypted codes and plain text tags in Home Assistant storage
 
 ## Implementation Phases
 

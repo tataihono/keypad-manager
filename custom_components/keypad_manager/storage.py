@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import secrets
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -9,6 +10,12 @@ from homeassistant.helpers.storage import Store
 
 from .const import DOMAIN, LOGGER
 from .data import KeypadManagerData, Schedule, User
+from .security import SecurityManager
+from .validation import (
+    validate_code,
+    validate_tag,
+    validate_user_name_and_access_method,
+)
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -26,6 +33,7 @@ class KeypadManagerStorage:
         self.hass = hass
         self.config_entry = config_entry
         self.store = Store(hass, STORAGE_VERSION, STORAGE_KEY)
+        self.security = SecurityManager(hass)
         self.data: KeypadManagerData | None = None
 
     async def async_load(self) -> KeypadManagerData:
@@ -47,13 +55,17 @@ class KeypadManagerStorage:
                     users[user_id] = User(
                         id=user_data["id"],
                         name=user_data["name"],
-                        code=user_data.get("code"),
+                        code_hash=user_data.get("code_hash"),
+                        code_salt=user_data.get("code_salt"),
                         tag=user_data.get("tag"),
                         active=user_data.get("active", True),
-                        created=datetime.fromisoformat(user_data["created"])
+                        created_at=datetime.fromisoformat(user_data["created"])
                         if user_data.get("created")
                         else None,
-                        last_used=datetime.fromisoformat(user_data["last_used"])
+                        updated_at=datetime.fromisoformat(user_data["created"])
+                        if user_data.get("created")
+                        else None,
+                        last_used_at=datetime.fromisoformat(user_data["last_used"])
                         if user_data.get("last_used")
                         else None,
                     )
@@ -85,7 +97,6 @@ class KeypadManagerStorage:
             return
 
         try:
-            # Convert our data structures to JSON-serializable format
             stored_data = {
                 "users": {},
                 "schedules": [],
@@ -96,12 +107,15 @@ class KeypadManagerStorage:
                     stored_data["users"][user_id] = {
                         "id": user.id,
                         "name": user.name,
-                        "code": user.code,
+                        "code_hash": user.code_hash,
+                        "code_salt": user.code_salt,
                         "tag": user.tag,
                         "active": user.active,
-                        "created": user.created.isoformat() if user.created else None,
-                        "last_used": user.last_used.isoformat()
-                        if user.last_used
+                        "created": user.created_at.isoformat()
+                        if user.created_at
+                        else None,
+                        "last_used": user.last_used_at.isoformat()
+                        if user.last_used_at
                         else None,
                     }
 
@@ -122,16 +136,133 @@ class KeypadManagerStorage:
         except (ValueError, KeyError, TypeError) as e:
             LOGGER.error("Error saving Keypad Manager data: %s", e)
 
-    async def async_add_user(self, user: User) -> None:
-        """Add a user to storage."""
+    async def async_create_user(
+        self, name: str, code: str | None = None, tag: str | None = None
+    ) -> User:
+        """Create a user with optional encrypted code and/or plain text tag."""
+        code_hash, code_salt = None, None
+        if code:
+            validate_code(code, self.data.users, self.security)
+            code_hash, code_salt = self.security.encrypt_code(code)
+
+        if tag:
+            validate_tag(tag, self.data.users)
+
+        user = User(
+            id=secrets.token_hex(16),
+            name=name,
+            code_hash=code_hash,
+            code_salt=code_salt,
+            tag=tag,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+
         if self.data is None:
             await self.async_load()
 
         if self.data.users is None:
             self.data.users = {}
 
+        validate_user_name_and_access_method(user)
         self.data.users[user.id] = user
         await self.async_save()
+        return user
+
+    async def async_update_user_name(self, user_id: str, name: str) -> User:
+        """Update a user in storage."""
+        user = await self.async_get_user_by_id(user_id)
+
+        updated_user = User(
+            id=user.id,
+            name=name,
+            code_hash=user.code_hash,
+            code_salt=user.code_salt,
+            tag=user.tag,
+            active=user.active,
+            created_at=user.created_at,
+            updated_at=datetime.now(),
+            last_used_at=user.last_used_at,
+        )
+        validate_user_name_and_access_method(updated_user)
+        self.data.users[user_id] = updated_user
+        await self.async_save()
+        return updated_user
+
+    async def async_update_user_code(
+        self, user_id: str, code: str | None = None
+    ) -> User:
+        """Update user credentials with validation and encryption."""
+        user = await self.async_get_user_by_id(user_id)
+
+        code_hash, code_salt = user.code_hash, user.code_salt
+
+        if code and code.strip() != "":
+            validate_code(code, self.data.users, self.security, user_id)
+            code_hash, code_salt = self.security.encrypt_code(code)
+        else:
+            code_hash, code_salt = None, None
+
+        updated_user = User(
+            id=user.id,
+            name=user.name,
+            code_hash=code_hash,
+            code_salt=code_salt,
+            tag=user.tag,
+            active=user.active,
+            created_at=user.created_at,
+            updated_at=datetime.now(),
+            last_used_at=user.last_used_at,
+        )
+        validate_user_name_and_access_method(updated_user)
+        self.data.users[user_id] = updated_user
+        await self.async_save()
+        return updated_user
+
+    async def async_update_user_tag(self, user_id: str, tag: str | None = None) -> User:
+        """Update user tag."""
+        user = await self.async_get_user_by_id(user_id)
+
+        if tag and tag.strip() != "":
+            validate_tag(tag, self.data.users, user_id)
+        else:
+            tag = None
+
+        updated_user = User(
+            id=user.id,
+            name=user.name,
+            code_hash=user.code_hash,
+            code_salt=user.code_salt,
+            tag=tag,
+            active=user.active,
+            created_at=user.created_at,
+            updated_at=datetime.now(),
+            last_used_at=user.last_used_at,
+        )
+        validate_user_name_and_access_method(updated_user)
+        self.data.users[user_id] = updated_user
+        await self.async_save()
+        return updated_user
+
+    async def async_update_user_last_used_at(self, user_id: str) -> User:
+        """Update user's last used timestamp."""
+        user = await self.async_get_user_by_id(user_id)
+
+        updated_user = User(
+            id=user.id,
+            name=user.name,
+            code_hash=user.code_hash,
+            code_salt=user.code_salt,
+            tag=user.tag,
+            active=user.active,
+            created_at=user.created_at,
+            updated_at=datetime.now(),
+            last_used_at=datetime.now(),
+        )
+        validate_user_name_and_access_method(updated_user)
+        self.data.users[user_id] = updated_user
+        await self.async_save()
+        return updated_user
 
     async def async_remove_user(self, user_id: str) -> None:
         """Remove a user from storage."""
@@ -143,32 +274,51 @@ class KeypadManagerStorage:
             await self.async_save()
 
     async def async_get_user_by_code(self, code: str) -> User | None:
-        """Get user by code."""
+        """Get user by code using secure verification."""
         if self.data is None:
             await self.async_load()
 
         if self.data.users:
             for user in self.data.users.values():
-                if user.code == code and user.active:
+                if not user.active:
+                    continue
+
+                if (
+                    user.code_hash
+                    and user.code_salt
+                    and self.security.verify_code(code, user.code_hash, user.code_salt)
+                ):
                     return user
         return None
 
     async def async_get_user_by_tag(self, tag: str) -> User | None:
-        """Get user by tag."""
+        """Get user by tag using plain text comparison."""
         if self.data is None:
             await self.async_load()
 
         if self.data.users:
             for user in self.data.users.values():
-                if user.tag == tag and user.active:
+                if not user.active:
+                    continue
+
+                if user.tag == tag:
                     return user
         return None
 
-    async def async_update_user_last_used(self, user_id: str) -> None:
-        """Update user's last used timestamp."""
+    async def async_get_all_users(self) -> dict[str, User]:
+        """Get all users."""
+        if self.data is None:
+            await self.async_load()
+
+        return self.data.users or {}
+
+    async def async_get_user_by_id(self, user_id: str) -> User | None:
+        """Get user by ID."""
         if self.data is None:
             await self.async_load()
 
         if self.data.users and user_id in self.data.users:
-            self.data.users[user_id].last_used = datetime.now(datetime.UTC)
-            await self.async_save()
+            return self.data.users[user_id]
+
+        message = f"User with ID '{user_id}' not found"
+        raise ValueError(message)

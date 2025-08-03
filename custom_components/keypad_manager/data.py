@@ -22,11 +22,13 @@ class User:
 
     id: str
     name: str
-    code: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    code_hash: str | None = None
+    code_salt: str | None = None
     tag: str | None = None
     active: bool = True
-    created: datetime | None = None
-    last_used: datetime | None = None
+    last_used_at: datetime | None = None
 
 
 @dataclass
@@ -37,6 +39,8 @@ class Schedule:
     day_of_week: int  # 0-6 (Monday-Sunday)
     start_time: str  # HH:MM:SS format
     end_time: str  # HH:MM:SS format
+    created_at: datetime
+    updated_at: datetime
     active: bool = True
 
 

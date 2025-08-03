@@ -1,4 +1,9 @@
+# Home Assistant requirements
 colorlog==6.9.0
 homeassistant==2025.2.4
 pip>=21.3.1
 ruff==0.12.7
+
+# Development requirements
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
