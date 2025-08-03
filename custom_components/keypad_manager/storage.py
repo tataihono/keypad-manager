@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import secrets
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from homeassistant.helpers.storage import Store
@@ -154,8 +154,8 @@ class KeypadManagerStorage:
             code_hash=code_hash,
             code_salt=code_salt,
             tag=tag,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
         )
 
         if self.data is None:
@@ -181,7 +181,7 @@ class KeypadManagerStorage:
             tag=user.tag,
             active=user.active,
             created_at=user.created_at,
-            updated_at=datetime.now(),
+            updated_at=datetime.now(UTC),
             last_used_at=user.last_used_at,
         )
         validate_user_name_and_access_method(updated_user)
@@ -211,7 +211,7 @@ class KeypadManagerStorage:
             tag=user.tag,
             active=user.active,
             created_at=user.created_at,
-            updated_at=datetime.now(),
+            updated_at=datetime.now(UTC),
             last_used_at=user.last_used_at,
         )
         validate_user_name_and_access_method(updated_user)
@@ -236,7 +236,7 @@ class KeypadManagerStorage:
             tag=tag,
             active=user.active,
             created_at=user.created_at,
-            updated_at=datetime.now(),
+            updated_at=datetime.now(UTC),
             last_used_at=user.last_used_at,
         )
         validate_user_name_and_access_method(updated_user)
@@ -256,8 +256,8 @@ class KeypadManagerStorage:
             tag=user.tag,
             active=user.active,
             created_at=user.created_at,
-            updated_at=datetime.now(),
-            last_used_at=datetime.now(),
+            updated_at=datetime.now(UTC),
+            last_used_at=datetime.now(UTC),
         )
         validate_user_name_and_access_method(updated_user)
         self.data.users[user_id] = updated_user
