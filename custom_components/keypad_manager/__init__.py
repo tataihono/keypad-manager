@@ -2,7 +2,7 @@
 Custom integration to integrate keypad_manager with Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/ludeeus/keypad-manager
+https://github.com/tataihono/keypad-manager
 """
 
 from __future__ import annotations

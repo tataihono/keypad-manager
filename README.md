@@ -119,8 +119,8 @@ The integration emits the following events:
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/ludeeus/keypad-manager/issues)
-- **Documentation**: [GitHub Repository](https://github.com/ludeeus/keypad-manager)
+- **Issues**: [GitHub Issues](https://github.com/tataihono/keypad-manager/issues)
+- **Documentation**: [GitHub Repository](https://github.com/tataihono/keypad-manager)
 
 ## Contributing
 
