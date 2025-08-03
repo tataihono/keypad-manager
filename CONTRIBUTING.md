@@ -48,7 +48,7 @@ Use [black](https://github.com/ambv/black) to make sure the code follows the sty
 
 ## Test your code modification
 
-This custom component is based on the [integration_blueprint template](https://github.com/ludeeus/integration_blueprint) but has been customized for Keypad Manager.
+This custom component is a Home Assistant integration for managing keypad codes and RFID tags.
 
 It comes with development environment in a container, easy to launch
 if you use Visual Studio Code. With this container you will have a stand alone
