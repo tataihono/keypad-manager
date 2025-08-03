@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 from homeassistant.const import Platform
 
 from .const import DOMAIN, LOGGER
+from .storage import KeypadManagerStorage
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -31,6 +32,13 @@ async def async_setup_entry(
 ) -> bool:
     """Set up this integration using UI."""
     LOGGER.info("Setting up Keypad Manager integration")
+
+    # Initialize storage
+    storage = KeypadManagerStorage(hass, entry)
+    await storage.async_load()
+    
+    # Store storage instance in entry runtime data
+    entry.runtime_data = storage
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))

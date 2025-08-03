@@ -20,16 +20,16 @@ This document outlines the step-by-step implementation plan for the Keypad Manag
   - [x] Clean up any template-specific code
 
 ### 1.2 Basic Integration Structure
-- [ ] **Core Files Setup**
-  - [ ] Update `__init__.py` for Keypad Manager domain
-  - [ ] Update `const.py` with new constants
-  - [ ] Create basic `data.py` for user management
-  - [ ] Set up storage structure for users and schedules
+- [x] **Core Files Setup**
+  - [x] Update `__init__.py` for Keypad Manager domain
+  - [x] Update `const.py` with new constants
+  - [x] Create basic `data.py` for user management
+  - [x] Set up storage structure for users and schedules
 
-- [ ] **Configuration Flow**
-  - [ ] Update `config_flow.py` for Keypad Manager setup
-  - [ ] Remove external API authentication (not needed)
-  - [ ] Create simple setup flow (no external dependencies)
+- [x] **Configuration Flow**
+  - [x] Update `config_flow.py` for Keypad Manager setup
+  - [x] Remove external API authentication (not needed)
+  - [x] Create simple setup flow (no external dependencies)
 
 ### 1.3 Data Model Implementation
 - [ ] **User Data Structure**
