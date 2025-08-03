@@ -48,7 +48,7 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
 
     def __init__(
         self,
-        config_entry,
+        config_entry: KeypadManagerConfigEntry,
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""

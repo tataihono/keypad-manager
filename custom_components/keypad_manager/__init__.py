@@ -16,6 +16,8 @@ from .const import DOMAIN, LOGGER
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
+    from .data import KeypadManagerConfigEntry
+
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
@@ -25,7 +27,7 @@ PLATFORMS: list[Platform] = [
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry,
+    entry: KeypadManagerConfigEntry,
 ) -> bool:
     """Set up this integration using UI."""
     LOGGER.info("Setting up Keypad Manager integration")
@@ -38,7 +40,7 @@ async def async_setup_entry(
 
 async def async_unload_entry(
     hass: HomeAssistant,
-    entry,
+    entry: KeypadManagerConfigEntry,
 ) -> bool:
     """Handle removal of an entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
@@ -46,7 +48,7 @@ async def async_unload_entry(
 
 async def async_reload_entry(
     hass: HomeAssistant,
-    entry,
+    entry: KeypadManagerConfigEntry,
 ) -> None:
     """Reload config entry."""
     await hass.config_entries.async_reload(entry.entry_id)

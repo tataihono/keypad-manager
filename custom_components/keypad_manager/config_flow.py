@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_NAME
 from homeassistant.helpers import selector
 
 from .const import DOMAIN, LOGGER
+from .data import KeypadManagerConfigEntry
 
 
 class KeypadManagerFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):

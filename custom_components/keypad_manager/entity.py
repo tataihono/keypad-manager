@@ -6,12 +6,13 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
 
 from .const import DOMAIN
+from .data import KeypadManagerConfigEntry
 
 
 class KeypadManagerEntity(Entity):
     """KeypadManagerEntity class."""
 
-    def __init__(self, config_entry) -> None:
+    def __init__(self, config_entry: KeypadManagerConfigEntry) -> None:
         """Initialize."""
         self._attr_unique_id = config_entry.entry_id
         self._attr_device_info = DeviceInfo(

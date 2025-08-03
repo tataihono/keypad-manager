@@ -47,7 +47,7 @@ class KeypadManagerBinarySensor(KeypadManagerEntity, BinarySensorEntity):
 
     def __init__(
         self,
-        config_entry,
+        config_entry: KeypadManagerConfigEntry,
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary_sensor class."""
