@@ -1,46 +1,127 @@
-# Notice
+# Keypad Manager
 
-The component and platforms in this repository are not meant to be used by a
-user, but as a "blueprint" that custom component developers can build
-upon, to make more awesome stuff.
+A Home Assistant custom integration for managing keypad codes, RFID tags, and access permissions. This integration provides a centralized system for validating access attempts and controlling automations based on authorized users and schedules.
 
-HAVE FUN! 😎
+## Features
 
-## Why?
+- **Code & Tag Management**: Manage keypad codes and RFID tags for multiple users
+- **Schedule-based Access**: Control access based on time and day restrictions
+- **Event-based Logging**: Native Home Assistant events for all access attempts
+- **Automation Integration**: Easy integration with Home Assistant automations
+- **User-friendly UI**: Web-based configuration interface
+- **Security Monitoring**: Track successful and failed access attempts
 
-This is simple, by having custom_components look (README + structure) the same
-it is easier for developers to help each other and for users to start using them.
+## Installation
 
-If you are a developer and you want to add things to this "blueprint" that you think more
-developers will have use for, please open a PR to add it :)
+### HACS (Recommended)
+1. Add this repository to HACS
+2. Install the "Keypad Manager" integration
+3. Restart Home Assistant
+4. Add the integration via Configuration > Integrations
 
-## What?
+### Manual Installation
+1. Copy the `custom_components/keypad_manager` folder to your Home Assistant `config/custom_components/` directory
+2. Restart Home Assistant
+3. Add the integration via Configuration > Integrations
 
-This repository contains multiple files, here is a overview:
+## Configuration
 
-File | Purpose | Documentation
--- | -- | --
-`.devcontainer.json` | Used for development/testing with Visual Studio Code. | [Documentation](https://code.visualstudio.com/docs/remote/containers)
-`.github/ISSUE_TEMPLATE/*.yml` | Templates for the issue tracker | [Documentation](https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository)
-`custom_components/integration_blueprint/*` | Integration files, this is where everything happens. | [Documentation](https://developers.home-assistant.io/docs/creating_component_index)
-`CONTRIBUTING.md` | Guidelines on how to contribute. | [Documentation](https://help.github.com/en/github/building-a-strong-community/setting-guidelines-for-repository-contributors)
-`LICENSE` | The license file for the project. | [Documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository)
-`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions. | [Documentation](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax)
-`requirements.txt` | Python packages used for development/lint/testing this integration. | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+### Basic Setup
+1. Go to **Configuration** > **Integrations**
+2. Click **+ Add Integration**
+3. Search for **Keypad Manager**
+4. Follow the setup wizard
 
-## How?
+### Adding Users
+1. Open the Keypad Manager integration
+2. Go to the **Users** tab
+3. Click **Add User**
+4. Enter the user's name, code, and/or tag
+5. Set up access schedules if needed
 
-1. Create a new repository in GitHub, using this repository as a template by clicking the "Use this template" button in the GitHub UI.
-1. Open your new repository in Visual Studio Code devcontainer (Preferably with the "`Dev Containers: Clone Repository in Named Container Volume...`" option).
-1. Rename all instances of the `integration_blueprint` to `custom_components/<your_integration_domain>` (e.g. `custom_components/awesome_integration`).
-1. Rename all instances of the `Integration Blueprint` to `<Your Integration Name>` (e.g. `Awesome Integration`).
-1. Run the `scripts/develop` to start HA and test out your new integration.
+### Automation Examples
 
-## Next steps
+#### Basic Code Validation
+```yaml
+automation:
+  - alias: "Keypad Door Unlock"
+    trigger:
+      - platform: state
+        entity_id: sensor.keypad_input
+    action:
+      - service: keypad_manager.validate_code
+        data:
+          code: "{{ states('sensor.keypad_input') }}"
+          source: "front_door"
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ result.valid }}"
+            sequence:
+              - service: lock.unlock
+                target:
+                  entity_id: lock.front_door
+```
 
-These are some next steps you may want to look into:
-- Add tests to your integration, [`pytest-homeassistant-custom-component`](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) can help you get started.
-- Add brand images (logo/icon) to https://github.com/home-assistant/brands.
-- Create your first release.
-- Share your integration on the [Home Assistant Forum](https://community.home-assistant.io/).
-- Submit your integration to [HACS](https://hacs.xyz/docs/publish/start).
+#### Monitor Access Events
+```yaml
+automation:
+  - alias: "Monitor Failed Access"
+    trigger:
+      - platform: event
+        event_type: keypad_manager_code_failed
+      - platform: event
+        event_type: keypad_manager_tag_failed
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "🚨 Security Alert"
+          message: |
+            Failed access attempt at {{ trigger.event.data.source }}
+            Input: {{ trigger.event.data.code or trigger.event.data.tag }}
+            Reason: {{ trigger.event.data.reason }}
+```
+
+## Services
+
+### `keypad_manager.validate_code`
+Validates a keypad code and returns success/failure.
+
+**Parameters:**
+- `code` (string, required): The code to validate
+- `source` (string, optional): Identifier for the calling automation
+
+**Returns:**
+- `valid` (boolean): Whether the code is valid
+- `user_name` (string, optional): Name of the user if valid
+- `reason` (string): Reason for failure if invalid
+
+### `keypad_manager.validate_tag`
+Validates an RFID tag and returns success/failure.
+
+**Parameters:**
+- `tag` (string, required): The tag to validate
+- `source` (string, optional): Identifier for the calling automation
+
+**Returns:**
+- `valid` (boolean): Whether the tag is valid
+- `user_name` (string, optional): Name of the user if valid
+- `reason` (string): Reason for failure if invalid
+
+## Events
+
+The integration emits the following events:
+
+- `keypad_manager_code_validated`: Successful code validation
+- `keypad_manager_tag_validated`: Successful tag validation
+- `keypad_manager_code_failed`: Failed code validation
+- `keypad_manager_tag_failed`: Failed tag validation
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/ludeeus/keypad-manager/issues)
+- **Documentation**: [GitHub Repository](https://github.com/ludeeus/keypad-manager)
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "Keypad Manager allows you to manage keypad codes and RFID tags for access control.",
+                "data": {}
+            }
+        },
+        "error": {
+            "unknown": "Unknown error occurred."
+        },
+        "abort": {
+            "already_configured": "This entry is already configured."
+        }
+    }
+}
