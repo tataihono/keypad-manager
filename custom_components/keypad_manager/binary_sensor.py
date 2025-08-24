@@ -71,7 +71,7 @@ class KeypadManagerBinarySensor(KeypadManagerEntity, BinarySensorEntity):
         entity_description: BinarySensorEntityDescription,
     ) -> None:
         """Initialize the binary_sensor class."""
-        super().__init__(config_entry)
+        super().__init__(config_entry, entity_description.key)
         self.entity_description = entity_description
         self._last_access_time: datetime | None = None
         self._last_user_name: str | None = None

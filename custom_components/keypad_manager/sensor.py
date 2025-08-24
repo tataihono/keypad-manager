@@ -69,7 +69,7 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""
-        super().__init__(config_entry)
+        super().__init__(config_entry, entity_description.key)
         self.entity_description = entity_description
         self._access_count_today = 0
         self._last_reset_date = datetime.now(UTC).date()

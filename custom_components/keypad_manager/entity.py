@@ -16,9 +16,9 @@ if TYPE_CHECKING:
 class KeypadManagerEntity(Entity):
     """KeypadManagerEntity class."""
 
-    def __init__(self, config_entry: KeypadManagerConfigEntry) -> None:
+    def __init__(self, config_entry: KeypadManagerConfigEntry, entity_key: str) -> None:
         """Initialize."""
-        self._attr_unique_id = config_entry.entry_id
+        self._attr_unique_id = f"{config_entry.entry_id}_{entity_key}"
         self._attr_device_info = DeviceInfo(
             identifiers={
                 (
