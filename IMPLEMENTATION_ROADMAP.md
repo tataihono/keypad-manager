@@ -47,32 +47,32 @@ This document outlines the step-by-step implementation plan for the Keypad Manag
 ## Phase 2: Core Services & Validation
 
 ### 2.1 Validation Services
-- [ ] **Code Validation Service**
-  - [ ] Implement `keypad_manager.validate_code` service
-  - [ ] Add user lookup by code
-  - [ ] Implement schedule checking
-  - [ ] Add uniqueness validation
-  - [ ] Return appropriate success/failure responses
+- [x] **Code Validation Service**
+  - [x] Implement `keypad_manager.validate_code` service
+  - [x] Add user lookup by code
+  - [x] Implement schedule checking
+  - [x] Add uniqueness validation
+  - [x] Return appropriate success/failure responses
 
-- [ ] **Tag Validation Service**
-  - [ ] Implement `keypad_manager.validate_tag` service
-  - [ ] Add user lookup by tag
-  - [ ] Implement schedule checking
-  - [ ] Add uniqueness validation
-  - [ ] Return appropriate success/failure responses
+- [x] **Tag Validation Service**
+  - [x] Implement `keypad_manager.validate_tag` service
+  - [x] Add user lookup by tag
+  - [x] Implement schedule checking
+  - [x] Add uniqueness validation
+  - [x] Return appropriate success/failure responses
 
 ### 2.2 Event System
-- [ ] **Success Events**
-  - [ ] Implement `keypad_manager_code_validated` event
-  - [ ] Implement `keypad_manager_tag_validated` event
-  - [ ] Include user information in success events
-  - [ ] Add proper timestamp and source data
+- [x] **Success Events**
+  - [x] Implement `keypad_manager_code_validated` event
+  - [x] Implement `keypad_manager_tag_validated` event
+  - [x] Include user information in success events
+  - [x] Add proper timestamp and source data
 
-- [ ] **Failure Events**
-  - [ ] Implement `keypad_manager_code_failed` event
-  - [ ] Implement `keypad_manager_tag_failed` event
-  - [ ] Include failure reason in events
-  - [ ] Add proper timestamp and source data
+- [x] **Failure Events**
+  - [x] Implement `keypad_manager_code_failed` event
+  - [x] Implement `keypad_manager_tag_failed` event
+  - [x] Include failure reason in events
+  - [x] Add proper timestamp and source data
 
 ### 2.3 User Management Services
 - [ ] **Add User Service**
@@ -136,24 +136,24 @@ This document outlines the step-by-step implementation plan for the Keypad Manag
 ## Phase 5: Entities & Monitoring
 
 ### 5.1 Binary Sensors
-- [ ] **Last Access Sensor**
-  - [ ] Implement `keypad_manager.last_access` binary sensor
-  - [ ] Update state based on validation events
-  - [ ] Add user_name, timestamp, source attributes
-  - [ ] Add reason attribute for failures
+- [x] **Last Access Sensor**
+  - [x] Implement `keypad_manager.last_access` binary sensor
+  - [x] Update state based on validation events
+  - [x] Add user_name, timestamp, source attributes
+  - [x] Add reason attribute for failures
 
 ### 5.2 Regular Sensors
-- [ ] **Active Users Sensor**
-  - [ ] Implement `keypad_manager.active_users` sensor
-  - [ ] Count total and active users
-  - [ ] Add users_with_codes and users_with_tags attributes
-  - [ ] Update on user changes
+- [x] **Active Users Sensor**
+  - [x] Implement `keypad_manager.active_users` sensor
+  - [x] Count total and active users
+  - [x] Add users_with_codes and users_with_tags attributes
+  - [x] Update on user changes
 
-- [ ] **Access Count Sensor**
-  - [ ] Implement `keypad_manager.access_count_today` sensor
-  - [ ] Track daily access attempts
-  - [ ] Add successful/failed access counts
-  - [ ] Reset daily at midnight
+- [x] **Access Count Sensor**
+  - [x] Implement `keypad_manager.access_count_today` sensor
+  - [x] Track daily access attempts
+  - [x] Add successful/failed access counts
+  - [x] Reset daily at midnight
 
 ## Phase 6: Testing & Documentation
 

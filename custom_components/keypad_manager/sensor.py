@@ -41,15 +41,19 @@ async def async_setup_entry(
         )
         for entity_description in ENTITY_DESCRIPTIONS
     ]
-    
+
     async_add_entities(entities)
-    
+
     # Set up event listeners for the sensors
     for entity in entities:
         if entity.entity_description.key == "access_count_today":
             # Listen for successful validations to increment access count
-            hass.bus.async_listen("keypad_manager_code_validated", entity._handle_access_event)
-            hass.bus.async_listen("keypad_manager_tag_validated", entity._handle_access_event)
+            hass.bus.async_listen(
+                "keypad_manager_code_validated", entity._handle_access_event
+            )
+            hass.bus.async_listen(
+                "keypad_manager_tag_validated", entity._handle_access_event
+            )
 
 
 class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
@@ -71,22 +75,27 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         """Return the native value of the sensor."""
         if self.entity_description.key == "active_users":
             # Get active user count from storage
-            if hasattr(self.config_entry, 'runtime_data') and self.config_entry.runtime_data:
+            if (
+                hasattr(self.config_entry, "runtime_data")
+                and self.config_entry.runtime_data
+            ):
                 storage = self.config_entry.runtime_data
                 if storage.data and storage.data.users:
-                    active_count = sum(1 for user in storage.data.users.values() if user.active)
+                    active_count = sum(
+                        1 for user in storage.data.users.values() if user.active
+                    )
                     return str(active_count)
             return "0"
-        
+
         elif self.entity_description.key == "access_count_today":
             # Check if we need to reset the counter for a new day
             current_date = datetime.now(UTC).date()
             if current_date != self._last_reset_date:
                 self._access_count_today = 0
                 self._last_reset_date = current_date
-            
+
             return self._access_count_today
-        
+
         return "0"
 
     @property
@@ -94,32 +103,41 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         """Return entity specific state attributes."""
         if self.entity_description.key == "active_users":
             # Get detailed user statistics
-            if hasattr(self.config_entry, 'runtime_data') and self.config_entry.runtime_data:
+            if (
+                hasattr(self.config_entry, "runtime_data")
+                and self.config_entry.runtime_data
+            ):
                 storage = self.config_entry.runtime_data
                 if storage.data and storage.data.users:
-                    users_with_codes = sum(1 for user in storage.data.users.values() 
-                                        if user.active and user.code_hash)
-                    users_with_tags = sum(1 for user in storage.data.users.values() 
-                                       if user.active and user.tag)
+                    users_with_codes = sum(
+                        1
+                        for user in storage.data.users.values()
+                        if user.active and user.code_hash
+                    )
+                    users_with_tags = sum(
+                        1
+                        for user in storage.data.users.values()
+                        if user.active and user.tag
+                    )
                     total_users = len(storage.data.users)
-                    
+
                     return {
                         "total_users": total_users,
                         "users_with_codes": users_with_codes,
                         "users_with_tags": users_with_tags,
                     }
-            
+
             return {
                 "total_users": 0,
                 "users_with_codes": 0,
                 "users_with_tags": 0,
             }
-        
+
         elif self.entity_description.key == "access_count_today":
             return {
                 "last_reset_date": self._last_reset_date.isoformat(),
             }
-        
+
         return {}
 
     def _handle_access_event(self, event: Event) -> None:
