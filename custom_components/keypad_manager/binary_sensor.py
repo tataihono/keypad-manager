@@ -10,13 +10,17 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorEntityDescription,
 )
-from homeassistant.core import Event, HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+if TYPE_CHECKING:
+    from homeassistant.core import Event, HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from .data import KeypadManagerConfigEntry
 
 from .entity import KeypadManagerEntity
 
-if TYPE_CHECKING:
-    from .data import KeypadManagerConfigEntry
+# Constants
+ACCESS_TIMEOUT_SECONDS = 300  # 5 minutes
 
 ENTITY_DESCRIPTIONS = (
     BinarySensorEntityDescription(
@@ -47,11 +51,14 @@ async def async_setup_entry(
     for entity in entities:
         if entity.entity_description.key == "last_access":
             # Listen for both successful code and tag validations
+            # Note: Private member access is intentional for event listener setup
             hass.bus.async_listen(
-                "keypad_manager_code_validated", entity._handle_access_event
+                "keypad_manager_code_validated",
+                entity._handle_access_event,  # noqa: SLF001
             )
             hass.bus.async_listen(
-                "keypad_manager_tag_validated", entity._handle_access_event
+                "keypad_manager_tag_validated",
+                entity._handle_access_event,  # noqa: SLF001
             )
 
 
@@ -78,7 +85,7 @@ class KeypadManagerBinarySensor(KeypadManagerEntity, BinarySensorEntity):
             return False
 
         time_since_access = datetime.now(UTC) - self._last_access_time
-        return time_since_access.total_seconds() < 300  # 5 minutes
+        return time_since_access.total_seconds() < ACCESS_TIMEOUT_SECONDS
 
     @property
     def extra_state_attributes(self) -> dict[str, str | None]:

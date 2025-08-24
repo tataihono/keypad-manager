@@ -1,4 +1,4 @@
-"""Sensor platform for keypad_manager."""
+"""Sensor platform for keypad_manager integration."""
 
 from __future__ import annotations
 
@@ -6,13 +6,14 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
-from homeassistant.core import Event, HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-from .entity import KeypadManagerEntity
 
 if TYPE_CHECKING:
+    from homeassistant.core import Event, HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
     from .data import KeypadManagerConfigEntry
+
+from .entity import KeypadManagerEntity
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
@@ -48,11 +49,14 @@ async def async_setup_entry(
     for entity in entities:
         if entity.entity_description.key == "access_count_today":
             # Listen for successful validations to increment access count
+            # Note: Private member access is intentional for event listener setup
             hass.bus.async_listen(
-                "keypad_manager_code_validated", entity._handle_access_event
+                "keypad_manager_code_validated",
+                entity._handle_access_event,  # noqa: SLF001
             )
             hass.bus.async_listen(
-                "keypad_manager_tag_validated", entity._handle_access_event
+                "keypad_manager_tag_validated",
+                entity._handle_access_event,  # noqa: SLF001
             )
 
 
@@ -88,7 +92,7 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
                     return str(active_count)
             return "0"
 
-        elif self.entity_description.key == "access_count_today":
+        if self.entity_description.key == "access_count_today":
             # Check if we need to reset the counter for a new day
             current_date = datetime.now(UTC).date()
             if current_date != self._last_reset_date:
@@ -134,14 +138,14 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
                 "users_with_tags": 0,
             }
 
-        elif self.entity_description.key == "access_count_today":
+        if self.entity_description.key == "access_count_today":
             return {
                 "last_reset_date": self._last_reset_date.isoformat(),
             }
 
         return {}
 
-    def _handle_access_event(self, event: Event) -> None:
+    def _handle_access_event(self, _event: Event) -> None:
         """Handle access events to increment the access count."""
         if self.entity_description.key == "access_count_today":
             self._access_count_today += 1

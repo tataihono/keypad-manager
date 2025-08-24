@@ -26,6 +26,7 @@ class ScheduleManager:
         day_of_week: int,
         start_time: str,
         end_time: str,
+        *,
         active: bool = True,
     ) -> Schedule:
         """Create a new schedule."""
@@ -49,6 +50,7 @@ class ScheduleManager:
     async def update_schedule(
         self,
         schedule_index: int,
+        *,
         day_of_week: int | None = None,
         start_time: str | None = None,
         end_time: str | None = None,

@@ -1,11 +1,17 @@
-"""Schedule validation for keypad_manager."""
+"""Schedule validation for keypad_manager integration."""
 
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING
 
 from .const import LOGGER
-from .data import Schedule
+
+if TYPE_CHECKING:
+    from .data import Schedule
+
+# Constants
+MAX_DAY_OF_WEEK = 6  # Sunday (0=Monday, 6=Sunday)
 
 
 class ScheduleValidationError(Exception):
@@ -21,7 +27,7 @@ class ScheduleValidator:
             message = "Day of week must be an integer"
             raise ScheduleValidationError(message)
 
-        if day_of_week < 0 or day_of_week > 6:
+        if day_of_week < 0 or day_of_week > MAX_DAY_OF_WEEK:
             message = "Day of week must be between 0 (Monday) and 6 (Sunday)"
             raise ScheduleValidationError(message)
 
@@ -54,16 +60,35 @@ class ScheduleValidator:
             raise ScheduleValidationError(message) from err
 
     def validate_schedule(self, schedule: Schedule) -> None:
-        """Validate complete schedule data."""
-        try:
-            self.validate_day_of_week(schedule.day_of_week)
-            self.validate_time_format(schedule.start_time)
-            self.validate_time_format(schedule.end_time)
-            self.validate_time_range(schedule.start_time, schedule.end_time)
+        """Validate a schedule."""
 
+        def _raise_error(message: str) -> None:
+            """Raise a ScheduleValidationError with the given message."""
+            raise ScheduleValidationError(message)
+
+        try:
+            # Validate day of week
+            if not isinstance(schedule.day_of_week, int):
+                _raise_error("Day of week must be an integer")
+
+            if schedule.day_of_week < 0 or schedule.day_of_week > MAX_DAY_OF_WEEK:
+                _raise_error("Day of week must be between 0 (Monday) and 6 (Sunday)")
+
+            # Validate time format
+            time_pattern = r"^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
+            if not re.match(time_pattern, schedule.start_time):
+                _raise_error("Start time must be in HH:MM:SS format")
+
+            if not re.match(time_pattern, schedule.end_time):
+                _raise_error("End time must be in HH:MM:SS format")
+
+            # Validate time logic
+            if schedule.start_time >= schedule.end_time:
+                _raise_error("Start time must be before end time")
+
+            # Validate active field
             if not isinstance(schedule.active, bool):
-                message = "Active must be a boolean"
-                raise ScheduleValidationError(message)
+                _raise_error("Active must be a boolean")
 
         except ScheduleValidationError as err:
             LOGGER.error("Schedule validation failed: %s", err)
