@@ -1,12 +1,23 @@
-# https://www.home-assistant.io/integrations/default_config/
-default_config:
-
-# https://www.home-assistant.io/integrations/homeassistant/
+# Home Assistant configuration
 homeassistant:
   debug: true
 
-# https://www.home-assistant.io/integrations/logger/
+# Logger configuration
 logger:
   default: info
   logs:
     custom_components.keypad_manager: debug
+
+# Core integrations (without go2rtc dependency issues)
+frontend:
+automation:
+script:
+scene:
+person:
+backup:
+onboarding:
+lovelace:
+mobile_app:
+notify:
+tts:
+todo:
