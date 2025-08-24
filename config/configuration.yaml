@@ -9,3 +9,5 @@ logger:
   default: info
   logs:
     custom_components.keypad_manager: debug
+
+automation: !include automations.yaml

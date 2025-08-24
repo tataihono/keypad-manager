@@ -80,7 +80,7 @@ add_user:
 
 remove_user:
   name: "Remove User"
-  description: "Remove a user from the Keypad Manager system and clean up associated schedules."
+  description: "Remove a user from the Keypad Manager system."
   fields:
     user_id:
       name: "User ID"

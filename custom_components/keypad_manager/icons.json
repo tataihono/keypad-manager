@@ -5,6 +5,12 @@
     },
     "validate_by_tag": {
       "service": "mdi:credit-card-wireless"
+    },
+    "add_user": {
+      "service": "mdi:account-plus"
+    },
+    "remove_user": {
+      "service": "mdi:account-remove"
     }
   }
 }
