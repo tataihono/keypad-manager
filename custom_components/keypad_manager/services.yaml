@@ -41,3 +41,52 @@ validate_by_tag:
       selector:
         text:
           type: text
+
+add_user:
+  name: "Add User"
+  description: "Add a new user to the Keypad Manager system."
+  fields:
+    name:
+      name: "User Name"
+      description: "The display name for the user."
+      required: true
+      example: "John Doe"
+      selector:
+        text:
+          type: text
+    code:
+      name: "Access Code"
+      description: "The user's access code (optional)."
+      required: false
+      example: "1234"
+      selector:
+        text:
+          type: text
+    tag:
+      name: "RFID Tag ID"
+      description: "The user's RFID tag ID (optional)."
+      required: false
+      example: "A1B2C3D4"
+      selector:
+        text:
+          type: text
+    active:
+      name: "Active Status"
+      description: "Whether the user is active (default: true)."
+      required: false
+      default: true
+      selector:
+        boolean: {}
+
+remove_user:
+  name: "Remove User"
+  description: "Remove a user from the Keypad Manager system and clean up associated schedules."
+  fields:
+    user_id:
+      name: "User ID"
+      description: "The unique identifier of the user to remove."
+      required: true
+      example: "01K3DWAVKS4JH7XGCZ99TMT8T8"
+      selector:
+        text:
+          type: text
