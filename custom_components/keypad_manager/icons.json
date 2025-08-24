@@ -11,6 +11,18 @@
     },
     "remove_user": {
       "service": "mdi:account-remove"
+    },
+    "create_schedule": {
+      "service": "mdi:calendar-plus"
+    },
+    "update_schedule": {
+      "service": "mdi:calendar-edit"
+    },
+    "remove_schedule": {
+      "service": "mdi:calendar-remove"
+    },
+    "get_schedules": {
+      "service": "mdi:calendar-clock"
     }
   }
 }

@@ -90,3 +90,141 @@ remove_user:
       selector:
         text:
           type: text
+
+create_schedule:
+  name: "Create Schedule"
+  description: "Create a new access schedule for a user."
+  fields:
+    user_id:
+      name: "User ID"
+      description: "The unique identifier of the user this schedule applies to."
+      required: true
+      example: "01K3DWAVKS4JH7XGCZ99TMT8T8"
+      selector:
+        text:
+          type: text
+    day_of_week:
+      name: "Day of Week"
+      description: "Day of the week."
+      required: true
+
+      selector:
+        select:
+          options:
+            - label: "Monday"
+              value: 0
+            - label: "Tuesday"
+              value: 1
+            - label: "Wednesday"
+              value: 2
+            - label: "Thursday"
+              value: 3
+            - label: "Friday"
+              value: 4
+            - label: "Saturday"
+              value: 5
+            - label: "Sunday"
+              value: 6
+    start_time:
+      name: "Start Time"
+      description: "When access is allowed to begin (HH:MM:SS format)."
+      required: true
+      example: "09:00:00"
+      selector:
+        time: {}
+    end_time:
+      name: "End Time"
+      description: "When access expires (HH:MM:SS format)."
+      required: true
+      example: "17:00:00"
+      selector:
+        time: {}
+    active:
+      name: "Active Status"
+      description: "Whether the schedule is active (default: true)."
+      required: false
+      default: true
+      selector:
+        boolean: {}
+
+update_schedule:
+  name: "Update Schedule"
+  description: "Update an existing access schedule."
+  fields:
+    schedule_index:
+      name: "Schedule Index"
+      description: "The index of the schedule to update."
+      required: true
+      example: 0
+      selector:
+        number:
+          min: 0
+          step: 1
+    day_of_week:
+      name: "Day of Week"
+      description: "Day of the week."
+      required: false
+      selector:
+        select:
+          options:
+            - label: "Monday"
+              value: 0
+            - label: "Tuesday"
+              value: 1
+            - label: "Wednesday"
+              value: 2
+            - label: "Thursday"
+              value: 3
+            - label: "Friday"
+              value: 4
+            - label: "Saturday"
+              value: 5
+            - label: "Sunday"
+              value: 6
+    start_time:
+      name: "Start Time"
+      description: "When access is allowed to begin (HH:MM:SS format)."
+      required: false
+      example: "10:00:00"
+      selector:
+        time: {}
+    end_time:
+      name: "End Time"
+      description: "When access expires (HH:MM:SS format)."
+      required: false
+      example: "18:00:00"
+      selector:
+        time: {}
+    active:
+      name: "Active Status"
+      description: "Whether the schedule is active."
+      required: false
+      selector:
+        boolean: {}
+
+remove_schedule:
+  name: "Remove Schedule"
+  description: "Remove an access schedule."
+  fields:
+    schedule_index:
+      name: "Schedule Index"
+      description: "The index of the schedule to remove."
+      required: true
+      example: 0
+      selector:
+        number:
+          min: 0
+          step: 1
+
+get_schedules:
+  name: "Get Schedules"
+  description: "Get all schedules for a specific user."
+  fields:
+    user_id:
+      name: "User ID"
+      description: "The unique identifier of the user to get schedules for."
+      required: true
+      example: "01K3DWAVKS4JH7XGCZ99TMT8T8"
+      selector:
+        text:
+          type: text

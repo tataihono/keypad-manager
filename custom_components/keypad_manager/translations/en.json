@@ -12,5 +12,23 @@
         "abort": {
             "already_configured": "This entry is already configured."
         }
+    },
+    "services": {
+        "create_schedule": {
+            "name": "Create Schedule",
+            "description": "Create a new access schedule for a user."
+        },
+        "update_schedule": {
+            "name": "Update Schedule",
+            "description": "Update an existing access schedule."
+        },
+        "remove_schedule": {
+            "name": "Remove Schedule",
+            "description": "Remove an access schedule."
+        },
+        "get_schedules": {
+            "name": "Get Schedules",
+            "description": "Get all schedules for a specific user."
+        }
     }
 }
