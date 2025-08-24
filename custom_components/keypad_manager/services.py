@@ -15,18 +15,28 @@ from .const import DOMAIN, LOGGER
 if TYPE_CHECKING:
     from .data import KeypadManagerConfigEntry
 
-# Service schemas
+# Service schemas with better descriptions and validation
 VALIDATE_CODE_SCHEMA = vol.Schema(
     {
-        vol.Required("code"): cv.string,
-        vol.Optional("source", default="unknown"): cv.string,
+        vol.Required(
+            "code", description="The numeric or alphanumeric code to validate"
+        ): cv.string,
+        vol.Optional(
+            "source",
+            description="Where this validation request came from (e.g., 'front_door', 'garage', 'office')",
+            default="unknown",
+        ): cv.string,
     }
 )
 
 VALIDATE_TAG_SCHEMA = vol.Schema(
     {
-        vol.Required("tag"): cv.string,
-        vol.Optional("source", default="unknown"): cv.string,
+        vol.Required("tag", description="The RFID tag ID to validate"): cv.string,
+        vol.Optional(
+            "source",
+            description="Where this validation request came from (e.g., 'front_door', 'garage', 'office')",
+            default="unknown",
+        ): cv.string,
     }
 )
 
@@ -234,17 +244,17 @@ async def async_setup_services(hass: HomeAssistant) -> None:
                 },
             )
 
-    # Register the services
+    # Register the services with better names and schemas
     hass.services.async_register(
         DOMAIN,
-        "validate_code",
+        "validate_by_code",  # Changed from validate_code
         validate_code_service,
         schema=VALIDATE_CODE_SCHEMA,
     )
 
     hass.services.async_register(
         DOMAIN,
-        "validate_tag",
+        "validate_by_tag",  # Changed from validate_tag
         validate_tag_service,
         schema=VALIDATE_TAG_SCHEMA,
     )

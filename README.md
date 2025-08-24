@@ -49,7 +49,7 @@ automation:
       - platform: state
         entity_id: sensor.keypad_input
     action:
-      - service: keypad_manager.validate_code
+      - service: keypad_manager.validate_by_code
         data:
           code: "{{ states('sensor.keypad_input') }}"
           source: "front_door"
@@ -84,24 +84,24 @@ automation:
 
 ## Services
 
-### `keypad_manager.validate_code`
+### `keypad_manager.validate_by_code`
 Validates a keypad code and returns success/failure.
 
 **Parameters:**
-- `code` (string, required): The code to validate
-- `source` (string, optional): Identifier for the calling automation
+- `code` (string, required): The numeric or alphanumeric code to validate
+- `source` (string, optional): Where this validation request came from (e.g., 'front_door', 'garage', 'office')
 
 **Returns:**
 - `valid` (boolean): Whether the code is valid
 - `user_name` (string, optional): Name of the user if valid
 - `reason` (string): Reason for failure if invalid
 
-### `keypad_manager.validate_tag`
+### `keypad_manager.validate_by_tag`
 Validates an RFID tag and returns success/failure.
 
 **Parameters:**
-- `tag` (string, required): The tag to validate
-- `source` (string, optional): Identifier for the calling automation
+- `tag` (string, required): The RFID tag ID to validate
+- `source` (string, optional): Where this validation request came from (e.g., 'front_door', 'garage', 'office')
 
 **Returns:**
 - `valid` (boolean): Whether the tag is valid

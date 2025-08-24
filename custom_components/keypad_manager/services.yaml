@@ -1,0 +1,43 @@
+validate_by_code:
+  name: "Validate by Code"
+  description: "Validate a user access code and check schedule permissions."
+  fields:
+    code:
+      name: "Access Code"
+      description: "The numeric or alphanumeric code to validate."
+      required: true
+      example: "1234"
+      selector:
+        text:
+          type: text
+    source:
+      name: "Access Point"
+      description: "Where this validation request came from (e.g., 'front_door', 'garage', 'office')."
+      required: false
+      default: "unknown"
+      example: "front_door"
+      selector:
+        text:
+          type: text
+
+validate_by_tag:
+  name: "Validate by Tag"
+  description: "Validate a user RFID tag and check schedule permissions."
+  fields:
+    tag:
+      name: "RFID Tag ID"
+      description: "The RFID tag ID to validate."
+      required: true
+      example: "A1B2C3D4"
+      selector:
+        text:
+          type: text
+    source:
+      name: "Access Point"
+      description: "Where this validation request came from (e.g., 'front_door', 'garage', 'office')."
+      required: false
+      default: "unknown"
+      example: "garage"
+      selector:
+        text:
+          type: text

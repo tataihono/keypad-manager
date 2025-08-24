@@ -69,6 +69,7 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         self.entity_description = entity_description
         self._access_count_today = 0
         self._last_reset_date = datetime.now(UTC).date()
+        self._config_entry = config_entry
 
     @property
     def native_value(self) -> str | int:
@@ -76,10 +77,10 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         if self.entity_description.key == "active_users":
             # Get active user count from storage
             if (
-                hasattr(self.config_entry, "runtime_data")
-                and self.config_entry.runtime_data
+                hasattr(self._config_entry, "runtime_data")
+                and self._config_entry.runtime_data
             ):
-                storage = self.config_entry.runtime_data
+                storage = self._config_entry.runtime_data
                 if storage.data and storage.data.users:
                     active_count = sum(
                         1 for user in storage.data.users.values() if user.active
@@ -104,10 +105,10 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         if self.entity_description.key == "active_users":
             # Get detailed user statistics
             if (
-                hasattr(self.config_entry, "runtime_data")
-                and self.config_entry.runtime_data
+                hasattr(self._config_entry, "runtime_data")
+                and self._config_entry.runtime_data
             ):
-                storage = self.config_entry.runtime_data
+                storage = self._config_entry.runtime_data
                 if storage.data and storage.data.users:
                     users_with_codes = sum(
                         1
