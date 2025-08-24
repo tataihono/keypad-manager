@@ -24,11 +24,11 @@ class User:
     name: str
     created_at: datetime
     updated_at: datetime
+    last_used_at: datetime | None = None
     code_hash: str | None = None
     code_salt: str | None = None
     tag: str | None = None
     active: bool = True
-    last_used_at: datetime | None = None
 
 
 @dataclass
