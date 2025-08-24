@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 from .entity import KeypadManagerEntity
 
 # Constants
-ACCESS_TIMEOUT_SECONDS = 300  # 5 minutes
+ACCESS_TIMEOUT_SECONDS = 1
 
 ENTITY_DESCRIPTIONS = (
     BinarySensorEntityDescription(
@@ -108,5 +108,4 @@ class KeypadManagerBinarySensor(KeypadManagerEntity, BinarySensorEntity):
         self._last_source = event_data.get("source")
 
         # Schedule a state update
-        if self.hass:
-            self.async_write_ha_state()
+        self.schedule_update_ha_state()

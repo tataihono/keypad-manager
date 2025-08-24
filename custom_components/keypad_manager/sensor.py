@@ -22,9 +22,14 @@ ENTITY_DESCRIPTIONS = (
         icon="mdi:account-group",
     ),
     SensorEntityDescription(
-        key="access_count_today",
-        name="Access Count Today",
-        icon="mdi:counter",
+        key="access_valid_today",
+        name="Access Valid Today",
+        icon="mdi:lock-check",
+    ),
+    SensorEntityDescription(
+        key="access_invalid_today",
+        name="Access Invalid Today",
+        icon="mdi:lock-alert",
     ),
 )
 
@@ -47,8 +52,8 @@ async def async_setup_entry(
 
     # Set up event listeners for the sensors
     for entity in entities:
-        if entity.entity_description.key == "access_count_today":
-            # Listen for successful validations to increment access count
+        if entity.entity_description.key == "access_valid_today":
+            # Listen for successful validations to increment valid access count
             # Note: Private member access is intentional for event listener setup
             hass.bus.async_listen(
                 "keypad_manager_code_validated",
@@ -56,6 +61,16 @@ async def async_setup_entry(
             )
             hass.bus.async_listen(
                 "keypad_manager_tag_validated",
+                entity._handle_access_event,  # noqa: SLF001
+            )
+        elif entity.entity_description.key == "access_invalid_today":
+            # Listen for failed attempts to increment invalid access count
+            hass.bus.async_listen(
+                "keypad_manager_code_failed",
+                entity._handle_access_event,  # noqa: SLF001
+            )
+            hass.bus.async_listen(
+                "keypad_manager_tag_failed",
                 entity._handle_access_event,  # noqa: SLF001
             )
 
@@ -71,7 +86,8 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         """Initialize the sensor class."""
         super().__init__(config_entry, entity_description.key)
         self.entity_description = entity_description
-        self._access_count_today = 0
+        self._access_valid_today = 0
+        self._access_invalid_today = 0
         self._last_reset_date = datetime.now(UTC).date()
         self._config_entry = config_entry
 
@@ -92,14 +108,23 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
                     return str(active_count)
             return "0"
 
-        if self.entity_description.key == "access_count_today":
-            # Check if we need to reset the counter for a new day
+        if self.entity_description.key == "access_valid_today":
+            # Check if we need to reset the valid access counter for a new day
             current_date = datetime.now(UTC).date()
             if current_date != self._last_reset_date:
-                self._access_count_today = 0
+                self._access_valid_today = 0
                 self._last_reset_date = current_date
 
-            return self._access_count_today
+            return self._access_valid_today
+
+        if self.entity_description.key == "access_invalid_today":
+            # Check if we need to reset the invalid access counter for a new day
+            current_date = datetime.now(UTC).date()
+            if current_date != self._last_reset_date:
+                self._access_invalid_today = 0
+                self._last_reset_date = current_date
+
+            return self._access_invalid_today
 
         return "0"
 
@@ -138,7 +163,12 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
                 "users_with_tags": 0,
             }
 
-        if self.entity_description.key == "access_count_today":
+        if self.entity_description.key == "access_valid_today":
+            return {
+                "last_reset_date": self._last_reset_date.isoformat(),
+            }
+
+        if self.entity_description.key == "access_invalid_today":
             return {
                 "last_reset_date": self._last_reset_date.isoformat(),
             }
@@ -146,9 +176,11 @@ class KeypadManagerSensor(KeypadManagerEntity, SensorEntity):
         return {}
 
     def _handle_access_event(self, _event: Event) -> None:
-        """Handle access events to increment the access count."""
-        if self.entity_description.key == "access_count_today":
-            self._access_count_today += 1
-            # Schedule a state update
-            if self.hass:
-                self.async_write_ha_state()
+        """Handle access events to increment the appropriate counter."""
+        if self.entity_description.key == "access_valid_today":
+            # Increment valid access count
+            self._access_valid_today += 1
+        elif self.entity_description.key == "access_invalid_today":
+            # Increment invalid access count
+            self._access_invalid_today += 1
+        self.schedule_update_ha_state()

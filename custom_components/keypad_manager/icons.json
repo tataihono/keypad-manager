@@ -1,7 +1,7 @@
 {
   "services": {
     "validate_by_code": {
-      "service": "mdi:key"
+      "service": "mdi:dialpad"
     },
     "validate_by_tag": {
       "service": "mdi:credit-card-wireless"
