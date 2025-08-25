@@ -112,26 +112,38 @@ This document outlines the step-by-step implementation plan for the Keypad Manag
 ## Phase 4: User Interface
 
 ### 4.1 Configuration UI
-- [ ] **Users Management Tab**
-  - [ ] Create user list view
-  - [ ] Add user creation form
-  - [ ] Add user editing capabilities
-  - [ ] Add user deletion with confirmation
-  - [ ] Add uniqueness validation feedback
+- [ ] **Sidebar Navigation**
+  - [ ] Create sidebar menu item labeled "Keypad Manager"
 
-- [ ] **Schedules Management Tab**
-  - [ ] Create schedule list view
-  - [ ] Add schedule creation form
-  - [ ] Add schedule editing capabilities
-  - [ ] Add schedule deletion
-  - [ ] Add time picker components
+- [ ] **Users Management Interface**
+  - [ ] Create user list view in main content area
+  - [ ] Display user rows with schedule summary and status toggle
+  - [ ] Add "Add New User" button/functionality
+  - [ ] Implement user creation form in modal with validation
+  - [ ] Add user editing capabilities (modal-based, not inline)
+  - [ ] Add user deletion with confirmation dialog
+  - [ ] Add uniqueness validation feedback for codes/tags
+  - [ ] Include calendar icon with edit icon for schedule management in each user row
+  - [ ] Add status toggle switch directly in user rows (active/inactive)
 
-### 4.2 Settings & Configuration
-- [ ] **Settings Tab**
-  - [ ] Add default access time configuration
-  - [ ] Add debug logging toggle
-  - [ ] Add data export/import options
-  - [ ] Add system status information
+- [ ] **User Schedule Management**
+  - [ ] Create separate schedule management modal (accessed via calendar icon with edit icon)
+  - [ ] Display all schedules for user in list format
+  - [ ] Allow creation of multiple schedule records per user
+  - [ ] Implement schedule creation form with day picker and time pickers
+  - [ ] Add schedule editing capabilities (inline within modal)
+  - [ ] Add schedule deletion functionality
+  - [ ] Add individual schedule active/inactive toggle
+  - [ ] Compile multiple schedules into readable summary format for user rows
+  - [ ] Validate one day per schedule with start/end times
+
+- [ ] **User Editing Modal**
+  - [ ] Implement modal with user information fields
+  - [ ] Add Mandarin-style checkboxes for code and tag updates
+  - [ ] Include last access time display (if available)
+  - [ ] Add validation to ensure at least one code OR tag exists
+  - [ ] Implement separate text fields for code and tag (editable only when checkbox is checked)
+  - [ ] Add user name and other basic fields
 
 ## Phase 5: Entities & Monitoring
 
@@ -242,10 +254,11 @@ For each task, use this format:
 - [ ] Multiple schedules per user work
 
 ### Phase 4 Complete When:
-- [ ] Users can be managed via UI
-- [ ] Schedules can be managed via UI
-- [ ] Settings can be configured
-- [ ] UI provides good user feedback
+- [ ] Sidebar navigation works with clickable "Users" section
+- [ ] Users can be viewed, added, edited, and deleted via UI
+- [ ] User schedules can be managed within user profiles
+- [ ] Multiple schedules per user can be created and managed
+- [ ] UI provides good user feedback and validation
 
 ### Phase 5 Complete When:
 - [ ] All entities update correctly
