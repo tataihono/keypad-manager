@@ -1,7 +1,7 @@
 """Pytest configuration and fixtures for keypad_manager tests."""
 
 from datetime import UTC, datetime
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -38,7 +38,9 @@ def storage_manager(
     mock_hass: MagicMock, mock_config_entry: MagicMock
 ) -> KeypadManagerStorage:
     """Storage manager instance."""
-    return KeypadManagerStorage(mock_hass, mock_config_entry)
+    storage = KeypadManagerStorage(mock_hass, mock_config_entry)
+    storage.store.async_save = AsyncMock()
+    return storage
 
 
 @pytest.fixture
