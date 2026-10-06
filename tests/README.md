@@ -156,3 +156,9 @@ Tests should be run:
 4. **Comprehensive**: Cover happy path, error cases, and edge cases
 5. **Fast**: Tests should run quickly (< 1 second each)
 6. **Reliable**: Tests should be deterministic and not flaky
+CI runs the full suite on pull requests and main pushes under Python 3.13.
+User operations are exercised through `storage.user_manager`; storage fixtures
+use the current `created_at`, `updated_at`, and `last_used_at` fields.
+Access tests cover serialized credential round-trip, inactive-user denial,
+and rejection of duplicate credentials without a write. No Home Assistant
+instance or physical device is contacted.
