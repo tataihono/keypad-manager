@@ -79,8 +79,8 @@ async def _add_user_impl(
     # Create the user
     user = await storage.user_manager.create(
         name=name,
-        code=code if code else None,
-        tag=tag if tag else None,
+        code=code or None,
+        tag=tag or None,
     )
 
     # Set active status if different from default
