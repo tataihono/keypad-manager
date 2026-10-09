@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """
 Custom integration to integrate keypad_manager with Home Assistant.
 

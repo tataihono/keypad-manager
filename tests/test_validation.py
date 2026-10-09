@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Tests for validation module."""
 
 from datetime import UTC, datetime

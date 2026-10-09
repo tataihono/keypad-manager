@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Validation services for keypad_manager integration."""
 
 from __future__ import annotations

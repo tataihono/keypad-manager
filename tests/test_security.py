@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Tests for security module."""
 
 from custom_components.keypad_manager.security import SecurityManager

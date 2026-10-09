@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """KeypadManagerEntity class."""
 
 from __future__ import annotations
