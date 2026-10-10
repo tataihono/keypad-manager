@@ -3,12 +3,15 @@
 """Tests for storage module."""
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
 from custom_components.keypad_manager.data import User
-from custom_components.keypad_manager.storage import KeypadManagerStorage
+
+if TYPE_CHECKING:
+    from custom_components.keypad_manager.storage import KeypadManagerStorage
 
 # Constants for test values
 EXPECTED_USER_COUNT = 2

@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 """Exercise credential access through the current manager and storage boundary."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock
 
 import pytest
 
-from custom_components.keypad_manager.storage import KeypadManagerStorage
+if TYPE_CHECKING:
+    from custom_components.keypad_manager.storage import KeypadManagerStorage
 from custom_components.keypad_manager.user_validator import UserValidationError
 
 
