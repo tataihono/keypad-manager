@@ -6,4 +6,4 @@ ruff==0.17.0
 
 # Development requirements
 pytest>=7.0.0
-pytest-asyncio>=0.21.0
+pytest-asyncio>=1.4.0
