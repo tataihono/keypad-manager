@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Exercise credential access through the current manager and storage boundary."""
 
 from typing import TYPE_CHECKING

@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Storage manager for keypad_manager."""
 
 from __future__ import annotations

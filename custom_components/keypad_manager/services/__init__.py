@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Services package for keypad_manager integration."""
 
 from typing import TYPE_CHECKING

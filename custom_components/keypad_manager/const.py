@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Constants for keypad_manager."""
 
 from logging import Logger, getLogger

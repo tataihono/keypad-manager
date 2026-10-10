@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Binary sensor platform for keypad_manager."""
 
 from __future__ import annotations
