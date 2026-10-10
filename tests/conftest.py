@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Pytest configuration and fixtures for keypad_manager tests."""
 
 from datetime import UTC, datetime

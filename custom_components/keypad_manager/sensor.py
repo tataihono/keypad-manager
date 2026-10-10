@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Sensor platform for keypad_manager integration."""
 
 from __future__ import annotations

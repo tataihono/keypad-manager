@@ -1,6 +1,11 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Tests for security module."""
 
-from custom_components.keypad_manager.security import SecurityManager
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from custom_components.keypad_manager.security import SecurityManager
 
 # Constants for test values
 SALT_LENGTH = 32

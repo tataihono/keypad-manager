@@ -1,12 +1,17 @@
+# Copyright (c) 2025 Tataihono Nikora
+# SPDX-License-Identifier: MIT
 """Tests for validation module."""
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
 
 from custom_components.keypad_manager.data import User
-from custom_components.keypad_manager.security import SecurityManager
+
+if TYPE_CHECKING:
+    from custom_components.keypad_manager.security import SecurityManager
 from custom_components.keypad_manager.validation import (
     ValidationError,
     validate_code,
