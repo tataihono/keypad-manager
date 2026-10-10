@@ -2,7 +2,10 @@
 # SPDX-License-Identifier: MIT
 """Services package for keypad_manager integration."""
 
-from homeassistant.core import HomeAssistant
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 from .schedule_management import async_setup_schedule_management_services
 from .user_management import async_setup_user_management_services
