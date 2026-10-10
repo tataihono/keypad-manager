@@ -1,6 +1,6 @@
 # Home Assistant requirements
 colorlog==6.12.0
-homeassistant==2026.10.0
+homeassistant==2026.10.1
 pip>=26.2.1
 ruff==0.17.0
 
